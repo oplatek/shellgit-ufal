@@ -117,20 +117,16 @@ export PATH=$HOME/.local/bin:"$PATH"
 
 
 ### CUDA ###
-name=`hostname`
-if [ "$name" == 'kronos-dev' ] ; then
-    export CUDA_VISIBLE_DEVICES=0  # shouldd Tesla K40c 
-fi
-cudadir=/usr/local/cuda
-if [[ -d "$cudadir" ]] ; then
-  export CUDA_HOME=/usr/local/cuda
-  export PATH=$cudadir/bin:"$PATH"
-  # 64bit version needs both $cuda/lib64 and $cuda/lib
-  export LD_LIBRARY_PATH=$cudadir/lib64:$cudadir/lib:"$LD_LIBRARY_PATH"
-    
-  echo TODO source $HOME/virtualenv/tensorflow-gpu/bin/activate
-else
-  echo TODO source $HOME/virtualenv/tensorflow-cpu/bin/activate
+CUDNN_version=7.0
+CUDA_version=9.0
+CUDA_DIR_OPT=/opt/cuda/$CUDA_version
+if [ -d "$CUDA_DIR_OPT" ] ; then
+  CUDA_DIR=$CUDA_DIR_OPT
+  export CUDA_HOME=$CUDA_DIR
+  export THEANO_FLAGS="cuda.root=$CUDA_HOME,device=gpu,floatX=float32"
+  export PATH=$PATH:$CUDA_DIR/bin
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CUDA_DIR/cudnn/$CUDNN_version/lib64:$CUDA_DIR/lib64
+  export CPATH=$CUDA_DIR/cudnn/$CUDNN_version/include:$CPATH
 fi
 
 

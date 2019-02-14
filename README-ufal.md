@@ -6,8 +6,8 @@ You can clone it (readonly) by:
 
 ```bash
 
-	git clone git@gitlab.com:oplatek/shellgit-ufal.git ~/shellgit-ufal.tmp
-    cp -r ~/shellgit-ufal.tmp/.git ~/.shellgit-ufal.git
+	git clone git@gitlab.com:oplatek/shellgit-ufal.git ~/shellgit-ufal
+    cp -r ~/shellgit-ufal/.git ~/.shellgit-ufal.git
 	alias ufalgit='git --git-dir=$HOME/.shellgit-ufal.git/ --work-tree=$HOME'
 	cd $HOME; ufalgit checkout .  # DANGEROUS ;-)
 ```

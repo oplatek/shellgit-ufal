@@ -1,0 +1,212 @@
+alias ufalgit='git --git-dir=$HOME/.shellgit-ufal.git/ --work-tree=$HOME'
+alias gtop='nvidia-smi -l'
+alias x='xdg-open'
+alias vi='vim'
+alias vimdiff='vim -d'
+alias view='vim -R'
+
+REPTYR_HELP="http://www.rvdh.de/2014/03/26/reptyr-resume-running-processes-in-screen-or-tmux/"
+
+
+
+export MYSSD="/net/cluster/SSD/oplatek"
+
+containsElement () {
+  local e
+  for e in ${@:2}; do [[ "$e" == "$1" ]] && return 0; done
+  return 1
+}
+
+alias ssh='ssh -AX'
+allowed_ssh_agents=('kirsch loki shrek lrc1 lrc2 blackbird sol8 sol 7 sol6')  # login or work machines
+agent_file_prefix="$HOME/.ssh/environment"
+hostname=`hostname -s`
+agent_file="${agent_file_prefix}/${hostname}"
+
+mkdir -p $agent_file_prefix
+
+#### DEPRECATED by using ssh -A from my notebook ######
+### See http://rabexc.org/posts/using-ssh-agent ###
+### Still not working in mosh. See https://github.com/mobile-shell/mosh/issues/120 . Let me know if they fixed it! ###
+function start_agent () {
+  >&2 echo "Initialising new SSH agent for $hostname"
+  ssh-agent | sed 's/^echo/#echo/' > "$agent_file"
+  chmod 600 "$agent_file"
+  . "$agent_file" > /dev/null
+  # ssh-add -l >/dev/null || { alias ssh='ssh-add -l >/dev/null || ssh-add && alias ssh="ssh -XYC"; ssh -XYC'; } FIXME why one would do it this way? 
+  ssh-add -l >/dev/null || ssh-add  > /dev/null || >&2 echo "Adding ssh-key to ss-agent failed. Ssh-agen will not probably work."
+  use_ssh_agent
+}
+
+function use_ssh_agent() {
+  alias ssh="ssh -A" # Force X-forwarding (+alias adding the key to agent)
+  ssh_pid=$(cat $agent_file 2> /dev/null | grep 'AGENT_PID' | sed 's/.*=\([0-9]*\);.*/\1/')
+  >&2 echo "Using SSH agent(pid: $ssh_pid) on $hostname"
+}
+
+# Source SSH settings, if applicable
+if ( tty -s) ; then
+  if containsElement "$hostname" "${allowed_ssh_agents[@]}" ; then
+    if [ ! -f "${agent_file}" ] ; then
+      >&2 echo "No settings for ssh agent found. Creating new."
+      start_agent
+     else
+       . "${agent_file}" > /dev/null
+       pid_name=$(ps -ef | grep "$SSH_AGENT_PID" | grep ssh-agent | rev | cut -d ' ' -f 1 | rev 2> /dev/null)
+       if [[ "$pid_name" != 'ssh-agent' ]] ; then
+         >&2 echo "Ssh agent with PID $SSH_AGENT_PID is not running anymore.  (Found process '$pid_name' instead). Restarting."
+         start_agent
+       else
+         >&2 echo "Found running ssh-agent $agent_pid"
+         use_ssh_agent
+       fi
+     fi
+  else
+    >&2 echo "SSH agent on $hostname is not allowed."
+  fi
+fi
+
+sshcwd () {
+  # save current running history so that it is available
+  # immediatelly on the remote machine
+  history -a;
+  # setup the working directory by setting WD
+  ssh -X -Y -t $@ "SSHAUTOWD='$PWD' /bin/bash --login -i";
+}
+# use WD to setup the working directory
+if [ -n "$SSHAUTOWD" ]; then
+  echo "Used working directory from previous computer"
+  cd $SSHAUTOWD;
+fi
+# don't export the variable further, it would confuse qsub etc...
+export -n SSHAUTOWD=""
+
+
+# On TTYs only:
+if ( tty -s ); then
+    # Greeting
+    echo -e 'Hi, this is\033[0;'${COLOR}'m' `hostname` '\033[0m' 1>&2
+fi
+
+
+export EMAIL=oplatek@ufal.mff.cuni.cz
+
+
+# ssh firewalled
+alias lrc2ssh="ssh -tY oplatek@lrc2"
+alias kronosssh="ssh -tY oplatek@kronos"
+alias twisterssh="ssh -tY oplatek@twister1"
+alias tunnel_kronos_8000to8000='ssh -N -f -L localhost:8000:localhost:8000 oplatek@kronos'
+
+
+
+export PATH=$HOME/.local/bin:"$PATH"
+
+
+#default webpage for lynx
+# WWW_HOME='http://localhost:8000/?dir=source_wavs'
+# export WWW_HOME
+
+
+############# Perl settings ###########
+# eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)
+
+# # Python 3.5
+# export PATH="/opt/python/anaconda3/bin:$PATH"
+# export LD_LIBRARY_PATH="/opt/python/anaconda3/lib:$LD_LIBRARY_PATH"
+
+
+### CUDA ###
+name=`hostname`
+if [ "$name" == 'kronos-dev' ] ; then
+    export CUDA_VISIBLE_DEVICES=0  # shouldd Tesla K40c 
+fi
+cudadir=/usr/local/cuda
+if [[ -d "$cudadir" ]] ; then
+  export CUDA_HOME=/usr/local/cuda
+  export PATH=$cudadir/bin:"$PATH"
+  # 64bit version needs both $cuda/lib64 and $cuda/lib
+  export LD_LIBRARY_PATH=$cudadir/lib64:$cudadir/lib:"$LD_LIBRARY_PATH"
+    
+  echo TODO source $HOME/virtualenv/tensorflow-gpu/bin/activate
+else
+  echo TODO source $HOME/virtualenv/tensorflow-cpu/bin/activate
+fi
+
+
+num_proc=$(grep processor /proc/cpuinfo | wc -l)
+alias make="make -j $(($num_proc * 2 / 3))"
+
+# CGDB
+cgdbbin=$HOME/bin/cgdb/bin
+export PATH=$cgdbbin:"$PATH"
+
+
+# wget https://bootstrap.pypa.io/get-pip.py && python get-pip.py --user
+# https://wiki.ufal.ms.mff.cuni.cz/user:dusek:python
+export PYTHONUSERBASE=~/.local
+export PATH="$PYTHONUSERBASE/bin:$PATH"
+export PYTHONPATH=$PYTHONUSERBASE/lib:"$PYTHONPATH"
+
+# autojump
+[[ -s /ha/home/oplatek/.autojump/etc/profile.d/autojump.sh ]] && . /ha/home/oplatek/.autojump/etc/profile.d/autojump.sh
+
+# Smart bash autocompletion
+if [ -f /etc/bash_completion ]; then
+ . /etc/bash_completion
+fi
+
+
+export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$HOME/lib:$LD_LIBRARY_PATH
+
+# . /home/odusek/.bashrc_make  # Rudolf's clever make autocompletion
+
+export IRSTLM=$HOME
+
+
+
+function notify () {
+    date_time=`date`
+    msg='No message'
+    [ $# -ge 1 ] && msg="$1"
+    [[ $# -gt 1 ]] && [[ -f "$2" ]] && input="$2" || input="-"
+
+    cat "$input" | mailx -s "Notify $date_time: $msg" ondrej.platek@gmail.com
+}
+
+function job_running () {
+  job_id=$1
+  job_st_last=unknown
+  job_st=unknown
+  echo todo not working
+  while [[ $job_st = "Following jobs do not exits:"* ]] ; do
+    job_st_last="$job_st"
+    job_st="$(qstat -j $job_id)"
+    sleep 1
+  done
+  msg="Job $job_id not found by qstat:$job_st. Last log is $job_st_last"
+  2>&1 echo $msg
+  echo $msg >(mail -s "Job not running $job_id $date_time: $msg" ondrej.platek@gmail.com)
+}
+
+declare -a COLORS=('1;30' '1;31' '1;32' '0;33' '1;33' '1;34' '0;35' '1;35' '0;36' '1;36' '1;37')
+
+function machine_color () {
+    HOST=`hostname -s | sed s/[0-9]//g`
+    if [[ $HOST = "kirsch" ]]; then
+        COLOR='0;31' # red for kirsch
+    elif [[ $HOST = "lrc" ]]; then
+        COLOR='0;32' # green for lrc
+    else 
+        SHORT=${HOST:0:5}
+        COLOR=0
+        for (( I=0; I<${#SHORT}; I++ )); do
+            ADD=`printf '%d' "'${SHORT:$I:1}"`
+            COLOR=$(( $COLOR + $ADD ))
+        done
+        #COLOR=`printf '%d' "'$FIRSTCHAR"`
+        COLOR_IDX=$(( $COLOR % ${#COLORS[@]}  ))
+        COLOR=${COLORS[$COLOR_IDX]}
+    fi
+}

@@ -118,7 +118,7 @@ export PATH=$HOME/.local/bin:"$PATH"
 
 ### CUDA ###
 CUDNN_version=7.0
-CUDA_version=9.0
+CUDA_version=9.2  # alternatives 8.0 9.0 9.1 9.2
 CUDA_DIR_OPT=/opt/cuda/$CUDA_version
 if [ -d "$CUDA_DIR_OPT" ] ; then
   CUDA_DIR=$CUDA_DIR_OPT

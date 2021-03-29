@@ -132,22 +132,22 @@ export PATH=$HOME/.local/bin:"$PATH"
 # 7.6  8.0
 # /opt/cuda/9.1/cudnn  # not available under conda cudatoolkit=9.1
 # 7.0  7.1
-# /opt/cuda/11.1/cudnn
+# /opt/cuda/11.1/cudnn # needed for dll9 and dll10
 # 8.0
 # /opt/cuda/10.1/cudnn  # 10.1 and 7.6 produced errors for espnet
 # 7.5  7.6
 
-# CUDNN_version=7.4
-# CUDA_version=9.2
-# CUDA_DIR_OPT="/opt/cuda/$CUDA_version"
-# if [ -d "$CUDA_DIR_OPT" ] ; then
-#   CUDA_DIR="$CUDA_DIR_OPT"
-#   export CUDA_HOME="$CUDA_DIR"
-#   export PATH="$CUDA_DIR/bin:$PATH"
-#   export LD_LIBRARY_PATH="$CUDA_DIR/cudnn/$CUDNN_version/lib64:$CUDA_DIR/lib64:$LD_LIBRARY_PATH"
-#   export LD_LIBRARY_PATH="$CUDA_DIR/targets/x86_64-linux/lib:$CUDA_DIR/lib64/stubs:$CUDA_DIR/lib64:$CUDA_DIR/lib/stubs:$CUDA_DIR/lib:$LD_LIBRARY_PATH"  # Kaldi from kaldi.mk
-#   export CPATH=$CUDA_DIR/cudnn/$CUDNN_version/include:$CPATH
-# fi
+CUDNN_version=8.0
+CUDA_version=11.1
+CUDA_DIR_OPT="/opt/cuda/$CUDA_version"
+if [ -d "$CUDA_DIR_OPT" ] ; then
+  CUDA_DIR="$CUDA_DIR_OPT"
+  export CUDA_HOME="$CUDA_DIR"
+  export PATH="$CUDA_DIR/bin:$PATH"
+  export LD_LIBRARY_PATH="$CUDA_DIR/cudnn/$CUDNN_version/lib64:$CUDA_DIR/lib64:$LD_LIBRARY_PATH"
+  export LD_LIBRARY_PATH="$CUDA_DIR/targets/x86_64-linux/lib:$CUDA_DIR/lib64/stubs:$CUDA_DIR/lib64:$CUDA_DIR/lib/stubs:$CUDA_DIR/lib:$LD_LIBRARY_PATH"  # Kaldi from kaldi.mk
+  export CPATH=$CUDA_DIR/cudnn/$CUDNN_version/include:$CPATH
+fi
 
 
 num_proc=$(grep processor /proc/cpuinfo | wc -l)

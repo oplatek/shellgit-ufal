@@ -5,17 +5,21 @@ alias vi='vim'
 alias vimdiff='vim -d'
 alias view='vim -R'
 
+# See https://wiki.ufal.ms.mff.cuni.cz/grid
+alias qrsh4r8='qrsh -q "cpu*" -l mem_free=8G,act_mem_free=8G,h_data=12G -pe smp 4 -wd $(pwd) -pty y bash'
+alias qrsh8r16='qrsh -q "cpu*" -l mem_free=16G,act_mem_free=16G,h_data=25G -pe smp 8 -wd $(pwd) -pty y bash'
+alias qrsh8r64='qrsh -q "cpu*" -l mem_free=64G,act_mem_free=64G,h_data=96G -pe smp 8 -wd $(pwd) -pty y bash'
+alias qrsh='qrsh4r8'
+# See https://wiki.ufal.ms.mff.cuni.cz/gpu
+alias qrsh1cuda11.0='qrsh -pe smp 8 -q gpu-ms.q -l mem_free=32G,act_mem_free=32G,h_data=48G,gpu=1,gpu_ram=24G,hostname="dll9|dll10" -wd $(pwd) -pty y bash'
+alias qrsh2cuda11.0='qrsh -pe smp 16 -q gpu-ms.q -l mem_free=64G,act_mem_free=64G,h_data=96G,gpu=2,gpu_ram=24G,hostname="dll9|dll10" -wd $(pwd) -pty y bash'
+alias qrsh1cuda10.1='qrsh -pe smp 8 -q gpu-troja.q -l mem_free=32G,act_mem_free=32G,h_data=48G,gpu=1,gpu_ram=16G,hostname="tdll*" -wd $(pwd) -pty y bash'
+alias qrsh4cuda10.1='qrsh -pe smp 32 -q gpu-troja.q -l mem_free=64G,act_mem_free=64G,h_data=96G,gpu=4,gpu_ram=16G,hostname="tdll*" -wd $(pwd) -pty y bash'
+
+
 REPTYR_HELP="http://www.rvdh.de/2014/03/26/reptyr-resume-running-processes-in-screen-or-tmux/"
 
 
-
-export MYSSD="/net/cluster/SSD/oplatek"
-
-containsElement () {
-  local e
-  for e in ${@:2}; do [[ "$e" == "$1" ]] && return 0; done
-  return 1
-}
 
 alias ssh='ssh -AX'
 allowed_ssh_agents=('kirsch loki shrek lrc1 lrc2 blackbird sol8 sol7 sol6')  # login or work machines
@@ -43,6 +47,13 @@ function use_ssh_agent() {
   ssh_pid=$(cat $agent_file 2> /dev/null | grep 'AGENT_PID' | sed 's/.*=\([0-9]*\);.*/\1/')
   >&2 echo "Using SSH agent(pid: $ssh_pid) on $hostname"
 }
+
+containsElement () {
+  local e
+  for e in ${@:2}; do [[ "$e" == "$1" ]] && return 0; done
+  return 1
+}
+
 
 # Source SSH settings, if applicable
 if ( tty -s) ; then

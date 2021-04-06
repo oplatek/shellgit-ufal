@@ -5,18 +5,21 @@ alias vi='vim'
 alias vimdiff='vim -d'
 alias view='vim -R'
 
+# ssh firewalled
+alias lrc2ssh="ssh -tY oplatek@lrc2"
+alias kronosssh="ssh -tY oplatek@kronos"
+alias twisterssh="ssh -tY oplatek@twister1"
+alias tunnel_kronos_8000to8000='ssh -N -f -L localhost:8000:localhost:8000 oplatek@kronos'
+
 # See https://wiki.ufal.ms.mff.cuni.cz/grid
 alias qrsh4r8='qrsh -q "cpu*" -l mem_free=8G,act_mem_free=8G,h_data=12G -pe smp 4 -V -wd $(pwd) -pty y bash'
 alias qrsh8r16='qrsh -q "cpu*" -l mem_free=16G,act_mem_free=16G,h_data=24G -pe smp 8 -V -wd $(pwd) -pty y bash'
 alias qrsh8r64='qrsh -q "cpu*" -l mem_free=64G,act_mem_free=64G,h_data=96G -pe smp 8 -V -wd $(pwd) -pty y bash'
 # See https://wiki.ufal.ms.mff.cuni.cz/gpu
-alias qrsh1cuda11.1='qrsh -q gpu-ms.q -l mem_free=32G,act_mem_free=32G,h_data=48G,gpu=1,gpu_ram=24G,h="dll9" -pe smp 8 -V -wd $(pwd) -pty y bash'
+alias qrsh1cuda11.1='qrsh -q gpu-ms.q -l mem_free=32G,act_mem_free=32G,h_data=48G,gpu=1,gpu_ram=24G,h="dll9|dll10" -pe smp 8 -V -wd $(pwd) -pty y bash'
 alias qrsh2cuda11.1='qrsh -pe smp 16 -q gpu-ms.q -l mem_free=64G,act_mem_free=64G,h_data=96G,gpu=2,gpu_ram=24G,h="dll9|dll10" -V -wd $(pwd) -pty y bash'
-alias qrsh1cuda10.1='qrsh -pe smp 8 -q gpu-troja.q -l mem_free=32G,act_mem_free=32G,h_data=48G,gpu=1,gpu_ram=16G,hostname="tdll*" -V -wd $(pwd) -pty y bash'
-alias qrsh4cuda10.1='qrsh -pe smp 32 -q gpu-troja.q -l mem_free=64G,act_mem_free=64G,h_data=96G,gpu=4,gpu_ram=16G,hostname="tdll*" -V -wd $(pwd) -pty y bash'
-
-REPTYR_HELP="http://www.rvdh.de/2014/03/26/reptyr-resume-running-processes-in-screen-or-tmux/"
-
+alias qrsh1cuda10.2='qrsh -pe smp 8 -q gpu\* -l mem_free=32G,act_mem_free=32G,h_data=48G,gpu=1,gpu_ram=16G,hostname="!(dll9|dll10)" -V -wd $(pwd) -pty y bash'
+alias qrsh4cuda10.2='qrsh -pe smp 32 -q gpu\* -l mem_free=64G,act_mem_free=64G,h_data=96G,gpu=4,gpu_ram=16G,hostname="!(dll9|dll10)" -V -wd $(pwd) -pty y bash'
 
 
 alias ssh='ssh -AX'
@@ -101,29 +104,6 @@ fi
 export EMAIL="oplatek@ufal.mff.cuni.cz"
 
 
-# ssh firewalled
-alias lrc2ssh="ssh -tY oplatek@lrc2"
-alias kronosssh="ssh -tY oplatek@kronos"
-alias twisterssh="ssh -tY oplatek@twister1"
-alias tunnel_kronos_8000to8000='ssh -N -f -L localhost:8000:localhost:8000 oplatek@kronos'
-
-
-
-export PATH=$HOME/.local/bin:"$PATH"
-
-
-#default webpage for lynx
-# WWW_HOME='http://localhost:8000/?dir=source_wavs'
-# export WWW_HOME
-
-
-############# Perl settings ###########
-# eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)
-
-# # Python 3.5
-# export PATH="/opt/python/anaconda3/bin:$PATH"
-# export LD_LIBRARY_PATH="/opt/python/anaconda3/lib:$LD_LIBRARY_PATH"
-
 
 ### CUDA ###
 # find /opt/cuda/ -name cudnn -exec bash -c "echo {}; ls {}" \;
@@ -146,8 +126,19 @@ export PATH=$HOME/.local/bin:"$PATH"
 # /opt/cuda/10.1/cudnn  # 10.1 and 7.6 produced errors for espnet
 # 7.5  7.6
 
-CUDNN_version=8.0
-CUDA_version=11.1
+hn="$(hostname)"
+if [[ $hn = dll9 || $hn = dll10 ]] ; then
+  CUDNN_version=8.0
+  CUDA_version=11.1
+elif [[ $hn = tdll[1-9] || $hn = dll[1-8] ]] ; then
+  CUDNN_version=8.0
+  CUDA_version=10.2
+else
+  CUDNN_version=""
+  CUDA_version=""
+fi
+
+
 CUDA_DIR_OPT="/opt/cuda/$CUDA_version"
 if [ -d "$CUDA_DIR_OPT" ] ; then
   CUDA_DIR="$CUDA_DIR_OPT"
@@ -161,11 +152,7 @@ fi
 
 
 num_proc=$(grep processor /proc/cpuinfo | wc -l)
-alias make="make -j $(($num_proc * 2 / 3))"
-
-# CGDB
-cgdbbin=$HOME/bin/cgdb/bin
-export PATH=$cgdbbin:"$PATH"
+alias make="make -j $(($num_proc / 3))"
 
 
 # wget https://bootstrap.pypa.io/get-pip.py && python get-pip.py --user
@@ -183,13 +170,7 @@ if [ -f /etc/bash_completion ]; then
 fi
 
 
-export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=$HOME/lib:$LD_LIBRARY_PATH
-
 # . /home/odusek/.bashrc_make  # Rudolf's clever make autocompletion
-
-export IRSTLM=$HOME
-
 
 
 function notify () {
@@ -214,25 +195,4 @@ function job_running () {
   msg="Job $job_id not found by qstat:$job_st. Last log is $job_st_last"
   2>&1 echo $msg
   echo $msg >(mail -s "Job not running $job_id $date_time: $msg" oplatek@ufal.mff.cuni.cz)
-}
-
-declare -a COLORS=('1;30' '1;31' '1;32' '0;33' '1;33' '1;34' '0;35' '1;35' '0;36' '1;36' '1;37')
-
-function machine_color () {
-    HOST=`hostname -s | sed s/[0-9]//g`
-    if [[ $HOST = "kirsch" ]]; then
-        COLOR='0;31' # red for kirsch
-    elif [[ $HOST = "lrc" ]]; then
-        COLOR='0;32' # green for lrc
-    else 
-        SHORT=${HOST:0:5}
-        COLOR=0
-        for (( I=0; I<${#SHORT}; I++ )); do
-            ADD=`printf '%d' "'${SHORT:$I:1}"`
-            COLOR=$(( $COLOR + $ADD ))
-        done
-        #COLOR=`printf '%d' "'$FIRSTCHAR"`
-        COLOR_IDX=$(( $COLOR % ${#COLORS[@]}  ))
-        COLOR=${COLORS[$COLOR_IDX]}
-    fi
 }

@@ -1,8 +1,9 @@
-# shellgit is repository for command line settings, especially bash #
+# Tips, tricks and docs for using Ufal cluster
 
 ## Installation ##
 See bin/setting_env.sh
-You can clone it (readonly) by:
+
+To install the settings, clone (readonly) this repository:
 
 ```bash
 

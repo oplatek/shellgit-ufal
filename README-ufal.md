@@ -37,3 +37,11 @@ lrwxrwxrwx 1 oplatek ufal 34 Apr  6 15:07 authorized_keys -> /home/oplatek/.ssh/
 lrwxrwxrwx 1 oplatek ufal 25 Apr  6 15:07 id_rsa -> /home/oplatek/.ssh/id_rsa                                                                                             
 lrwxrwxrwx 1 oplatek ufal 29 Apr  6 15:07 id_rsa.pub -> /home/oplatek/.ssh/id_rsa.pub                                                                                     
 ```
+
+### Credits
+I use settings and tips (with permission) from other people including:
+- Ondřej Dušek
+- Ondřej Bojar
+- Jan Vainer
+
+Thanks to them, and complain for possible errors to me.

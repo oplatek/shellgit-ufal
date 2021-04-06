@@ -30,15 +30,11 @@ agent_file="${agent_file_prefix}/${hostname}"
 
 mkdir -p $agent_file_prefix
 
-#### DEPRECATED by using ssh -A from my notebook ######
-### See http://rabexc.org/posts/using-ssh-agent ###
-### Still not working in mosh. See https://github.com/mobile-shell/mosh/issues/120 . Let me know if they fixed it! ###
 function start_agent () {
   >&2 echo "Initialising new SSH agent for $hostname"
   ssh-agent | sed 's/^echo/#echo/' > "$agent_file"
   chmod 600 "$agent_file"
   . "$agent_file" > /dev/null
-  # ssh-add -l >/dev/null || { alias ssh='ssh-add -l >/dev/null || ssh-add && alias ssh="ssh -XYC"; ssh -XYC'; } FIXME why one would do it this way? 
   ssh-add -l >/dev/null || ssh-add  > /dev/null || >&2 echo "Adding ssh-key to ss-agent failed. Ssh-agen will not probably work."
   use_ssh_agent
 }

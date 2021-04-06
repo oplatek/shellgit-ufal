@@ -6,16 +6,14 @@ alias vimdiff='vim -d'
 alias view='vim -R'
 
 # See https://wiki.ufal.ms.mff.cuni.cz/grid
-alias qrsh4r8='qrsh -q "cpu*" -l mem_free=8G,act_mem_free=8G,h_data=12G -pe smp 4 -wd $(pwd) -pty y bash'
-alias qrsh8r16='qrsh -q "cpu*" -l mem_free=16G,act_mem_free=16G,h_data=25G -pe smp 8 -wd $(pwd) -pty y bash'
-alias qrsh8r64='qrsh -q "cpu*" -l mem_free=64G,act_mem_free=64G,h_data=96G -pe smp 8 -wd $(pwd) -pty y bash'
-alias qrsh='qrsh4r8'
+alias qrsh4r8='qrsh -q "cpu*" -l mem_free=8G,act_mem_free=8G,h_data=12G -pe smp 4 -V -wd $(pwd) -pty y bash'
+alias qrsh8r16='qrsh -q "cpu*" -l mem_free=16G,act_mem_free=16G,h_data=24G -pe smp 8 -V -wd $(pwd) -pty y bash'
+alias qrsh8r64='qrsh -q "cpu*" -l mem_free=64G,act_mem_free=64G,h_data=96G -pe smp 8 -V -wd $(pwd) -pty y bash'
 # See https://wiki.ufal.ms.mff.cuni.cz/gpu
-alias qrsh1cuda11.0='qrsh -pe smp 8 -q gpu-ms.q -l mem_free=32G,act_mem_free=32G,h_data=48G,gpu=1,gpu_ram=24G,hostname="dll9|dll10" -wd $(pwd) -pty y bash'
-alias qrsh2cuda11.0='qrsh -pe smp 16 -q gpu-ms.q -l mem_free=64G,act_mem_free=64G,h_data=96G,gpu=2,gpu_ram=24G,hostname="dll9|dll10" -wd $(pwd) -pty y bash'
-alias qrsh1cuda10.1='qrsh -pe smp 8 -q gpu-troja.q -l mem_free=32G,act_mem_free=32G,h_data=48G,gpu=1,gpu_ram=16G,hostname="tdll*" -wd $(pwd) -pty y bash'
-alias qrsh4cuda10.1='qrsh -pe smp 32 -q gpu-troja.q -l mem_free=64G,act_mem_free=64G,h_data=96G,gpu=4,gpu_ram=16G,hostname="tdll*" -wd $(pwd) -pty y bash'
-
+alias qrsh1cuda11.1='qrsh -q gpu-ms.q -l mem_free=32G,act_mem_free=32G,h_data=48G,gpu=1,gpu_ram=24G,h="dll9" -pe smp 8 -V -wd $(pwd) -pty y bash'
+alias qrsh2cuda11.1='qrsh -pe smp 16 -q gpu-ms.q -l mem_free=64G,act_mem_free=64G,h_data=96G,gpu=2,gpu_ram=24G,h="dll9|dll10" -V -wd $(pwd) -pty y bash'
+alias qrsh1cuda10.1='qrsh -pe smp 8 -q gpu-troja.q -l mem_free=32G,act_mem_free=32G,h_data=48G,gpu=1,gpu_ram=16G,hostname="tdll*" -V -wd $(pwd) -pty y bash'
+alias qrsh4cuda10.1='qrsh -pe smp 32 -q gpu-troja.q -l mem_free=64G,act_mem_free=64G,h_data=96G,gpu=4,gpu_ram=16G,hostname="tdll*" -V -wd $(pwd) -pty y bash'
 
 REPTYR_HELP="http://www.rvdh.de/2014/03/26/reptyr-resume-running-processes-in-screen-or-tmux/"
 
@@ -158,6 +156,7 @@ if [ -d "$CUDA_DIR_OPT" ] ; then
   export LD_LIBRARY_PATH="$CUDA_DIR/cudnn/$CUDNN_version/lib64:$CUDA_DIR/lib64:$LD_LIBRARY_PATH"
   export LD_LIBRARY_PATH="$CUDA_DIR/targets/x86_64-linux/lib:$CUDA_DIR/lib64/stubs:$CUDA_DIR/lib64:$CUDA_DIR/lib/stubs:$CUDA_DIR/lib:$LD_LIBRARY_PATH"  # Kaldi from kaldi.mk
   export CPATH=$CUDA_DIR/cudnn/$CUDNN_version/include:$CPATH
+  export CUDAToolkit_ROOT="$CUDA_DIR_OPT"
 fi
 
 

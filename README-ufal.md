@@ -43,5 +43,6 @@ I use settings and tips (with permission) from other people including:
 - Ondřej Dušek
 - Ondřej Bojar
 - Jan Vainer
+- Tomas Nekvinda
 
 Thanks to them, and complain for possible errors to me.

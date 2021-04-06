@@ -16,9 +16,15 @@ To browse source code go to https://gitlab.com/oplatek/shellgit-ufal or for stab
 
 ### Stores ###
 
-* `.bashrc_local`
+* `.bashrc_local` contains
+  - qrsh aliases with cuda10.2 and cuda11.1 and compatible machines
+  - CUDA setup based based on CUDA Compute Compatability
+  - starting ssh-agent (based on Ondrej Dusek scripts)
+  - notify function for mail notification
 * `./bin/queue.conf` for [queue.pl](https://github.com/kaldi-asr/kaldi/blob/master/egs/wsj/s5/utils/parallel/queue.pl)
   - Useful for Espnet, Kaldi or any custom scripts using job arrays and parallelization on data
+* `.forward` and `.sge_request`  - sge related files to mail notifications
+    
 
 ### SSH to ufal servers and in between machine
 

@@ -1,7 +1,6 @@
 # Tips, tricks and docs for using Ufal cluster
 
 ## Installation ##
-See bin/setting_env.sh
 
 To install the settings, clone (readonly) this repository:
 
@@ -17,9 +16,9 @@ To browse source code go to https://gitlab.com/oplatek/shellgit-ufal
 
 ### Stores ###
 
-* bashrc_local
-* qsub scripts
-* ssh client startup scripts
+* `.bashrc_local`
+* `./bin/queue.conf` for [queue.pl](https://github.com/kaldi-asr/kaldi/blob/master/egs/wsj/s5/utils/parallel/queue.pl)
+  - Useful for Espnet, Kaldi or any custom scripts using job arrays and parallelization on data
 
 ### SSH to ufal servers and in between machine
 

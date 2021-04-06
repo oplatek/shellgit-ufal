@@ -21,3 +21,20 @@ To browse source code go to https://gitlab.com/oplatek/shellgit-ufal
 * bashrc_local
 * qsub scripts
 * ssh client startup scripts
+
+### SSH to ufal servers and in between machine
+
+See `/etc/ssh/sshd_config`. The authorised key are located in `/home/ETC/$USER/.ssh`.
+
+I just symlink the default folder files there
+
+```
+$ pwd
+/home/ETC/oplatek/.ssh
+
+$ l
+total 2
+lrwxrwxrwx 1 oplatek ufal 34 Apr  6 15:07 authorized_keys -> /home/oplatek/.ssh/authorized_keys                                                                           
+lrwxrwxrwx 1 oplatek ufal 25 Apr  6 15:07 id_rsa -> /home/oplatek/.ssh/id_rsa                                                                                             
+lrwxrwxrwx 1 oplatek ufal 29 Apr  6 15:07 id_rsa.pub -> /home/oplatek/.ssh/id_rsa.pub                                                                                     
+```

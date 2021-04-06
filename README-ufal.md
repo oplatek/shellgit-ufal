@@ -12,7 +12,7 @@ cd $HOME; ufalgit checkout .  # DANGEROUS ;-)
 ```
 
 
-To browse source code go to https://gitlab.com/oplatek/shellgit-ufal
+To browse source code go to https://gitlab.com/oplatek/shellgit-ufal or for stable version to https://github.com/ufal/oplatek-clustershgit.
 
 ### Stores ###
 

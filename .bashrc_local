@@ -12,9 +12,9 @@ alias tunnel_kronos_8000to8000='ssh -N -f -L localhost:8000:localhost:8000 oplat
 
 # See https://wiki.ufal.ms.mff.cuni.cz/grid
 export headcmdprefix="ssh -t sol8 /bin/bash -l"
-alias qrsh4r8="$headcmdprefix 'qrsh -q cpu\* -l mem_free=8G,act_mem_free=8G,h_data=12G -pe smp 4 -V -wd $(pwd) -pty y bash'"
-alias qrsh8r16="$headcmdprefix 'qrsh -q cpu\* -l mem_free=16G,act_mem_free=16G,h_data=24G -pe smp 8 -V -wd $(pwd) -pty y bash'"
-alias qrsh8r64="$headcmdprefix 'qrsh -q cpu\* -l mem_free=64G,act_mem_free=64G,h_data=96G -pe smp 8 -V -wd $(pwd) -pty y bash'"
+alias qrsh4r8="$headcmdprefix ~/bin/qrsh4r8"
+alias qrsh8r16="$headcmdprefix ~/bin/qrsh8r16"
+alias qrsh8r64="$headcmdprefix ~/bin/qrsh8r64"
 # See https://wiki.ufal.ms.mff.cuni.cz/gpu
 alias qrsh1cuda11.1="$headcmdprefix ~/bin/qrsh1cuda11.1"
 alias qrsh2cuda11.1="$headcmdprefix ~/bin/qrsh2cuda11.1"
@@ -26,7 +26,7 @@ export AWS_PROFILE=clusterman
 
 alias ssh='ssh -AX'
 # see https://wiki.ufal.ms.mff.cuni.cz/internal:remote-access
-allowed_ssh_agents=('geri greki blackbird lrc1 lrc2 sol1 sol2 sol3 sol4 sol5 sol6 sol7 sol8')  # login or work machines
+allowed_ssh_agents=('geri freki blackbird lrc1 lrc2 sol1 sol2 sol3 sol4 sol5 sol6 sol7 sol8')  # login or work machines
 agent_file_prefix="$HOME/.ssh/environment"
 hostname=`hostname -s`
 agent_file="${agent_file_prefix}/${hostname}"

@@ -1,0 +1,2 @@
+#!/bin/bash
+qrsh -q cpu\* -l mem_free=16G,act_mem_free=16G,h_data=24G -pe smp 8 -V -wd $(pwd) -pty y bash

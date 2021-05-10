@@ -1,7 +1,6 @@
 # Tips, tricks and docs for using Ufal cluster
 
 ## Installation ##
-See bin/setting_env.sh
 
 To install the settings, clone (readonly) this repository:
 
@@ -13,13 +12,19 @@ cd $HOME; ufalgit checkout .  # DANGEROUS ;-)
 ```
 
 
-To browse source code go to https://gitlab.com/oplatek/shellgit-ufal
+To browse source code go to https://gitlab.com/oplatek/shellgit-ufal or for stable version to https://github.com/ufal/oplatek-clustershgit.
 
 ### Stores ###
 
-* bashrc_local
-* qsub scripts
-* ssh client startup scripts
+* `.bashrc_local` contains
+  - qrsh aliases with cuda10.2 and cuda11.1 and compatible machines
+  - CUDA setup based based on CUDA Compute Compatability
+  - starting ssh-agent (based on Ondrej Dusek scripts)
+  - notify function for mail notification
+* `./bin/queue.conf` for [queue.pl](https://github.com/kaldi-asr/kaldi/blob/master/egs/wsj/s5/utils/parallel/queue.pl)
+  - Useful for Espnet, Kaldi or any custom scripts using job arrays and parallelization on data
+* `.forward` and `.sge_request`  - sge related files to mail notifications
+    
 
 ### SSH to ufal servers and in between machine
 
@@ -43,5 +48,6 @@ I use settings and tips (with permission) from other people including:
 - Ondřej Dušek
 - Ondřej Bojar
 - Jan Vainer
+- Tomas Nekvinda
 
 Thanks to them, and complain for possible errors to me.

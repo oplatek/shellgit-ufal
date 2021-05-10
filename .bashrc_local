@@ -6,24 +6,27 @@ alias vimdiff='vim -d'
 alias view='vim -R'
 
 # ssh firewalled
-alias lrc2ssh="ssh -tY oplatek@lrc2"
 alias kronosssh="ssh -tY oplatek@kronos"
 alias twisterssh="ssh -tY oplatek@twister1"
 alias tunnel_kronos_8000to8000='ssh -N -f -L localhost:8000:localhost:8000 oplatek@kronos'
 
 # See https://wiki.ufal.ms.mff.cuni.cz/grid
-alias qrsh4r8='qrsh -q "cpu*" -l mem_free=8G,act_mem_free=8G,h_data=12G -pe smp 4 -V -wd $(pwd) -pty y bash'
-alias qrsh8r16='qrsh -q "cpu*" -l mem_free=16G,act_mem_free=16G,h_data=24G -pe smp 8 -V -wd $(pwd) -pty y bash'
-alias qrsh8r64='qrsh -q "cpu*" -l mem_free=64G,act_mem_free=64G,h_data=96G -pe smp 8 -V -wd $(pwd) -pty y bash'
+export headcmdprefix="ssh -t sol8 /bin/bash -l"
+alias qrsh4r8="$headcmdprefix 'qrsh -q cpu\* -l mem_free=8G,act_mem_free=8G,h_data=12G -pe smp 4 -V -wd $(pwd) -pty y bash'"
+alias qrsh8r16="$headcmdprefix 'qrsh -q cpu\* -l mem_free=16G,act_mem_free=16G,h_data=24G -pe smp 8 -V -wd $(pwd) -pty y bash'"
+alias qrsh8r64="$headcmdprefix 'qrsh -q cpu\* -l mem_free=64G,act_mem_free=64G,h_data=96G -pe smp 8 -V -wd $(pwd) -pty y bash'"
 # See https://wiki.ufal.ms.mff.cuni.cz/gpu
-alias qrsh1cuda11.1='qrsh -q gpu-ms.q -l mem_free=32G,act_mem_free=32G,h_data=48G,gpu=1,gpu_ram=24G,h="dll9|dll10" -pe smp 8 -V -wd $(pwd) -pty y bash'
-alias qrsh2cuda11.1='qrsh -pe smp 16 -q gpu-ms.q -l mem_free=64G,act_mem_free=64G,h_data=96G,gpu=2,gpu_ram=24G,h="dll9|dll10" -V -wd $(pwd) -pty y bash'
-alias qrsh1cuda10.2='qrsh -pe smp 8 -q gpu\* -l mem_free=32G,act_mem_free=32G,h_data=48G,gpu=1,gpu_ram=16G,hostname="!(dll9|dll10)" -V -wd $(pwd) -pty y bash'
-alias qrsh4cuda10.2='qrsh -pe smp 32 -q gpu\* -l mem_free=64G,act_mem_free=64G,h_data=96G,gpu=4,gpu_ram=16G,hostname="!(dll9|dll10)" -V -wd $(pwd) -pty y bash'
+alias qrsh1cuda11.1="$headcmdprefix ~/bin/qrsh1cuda11.1"
+alias qrsh2cuda11.1="$headcmdprefix ~/bin/qrsh2cuda11.1"
+alias qrsh1cuda10.2="$headcmdprefix ~/bin/qrsh1cuda10.2"
+alias qrsh2cuda10.2="$headcmdprefix ~/bin/qrsh2cuda10.2"
+
+export AWS_PROFILE=clusterman
 
 
 alias ssh='ssh -AX'
-allowed_ssh_agents=('kirsch loki shrek lrc1 lrc2 blackbird sol8 sol7 sol6')  # login or work machines
+# see https://wiki.ufal.ms.mff.cuni.cz/internal:remote-access
+allowed_ssh_agents=('geri greki blackbird lrc1 lrc2 sol1 sol2 sol3 sol4 sol5 sol6 sol7 sol8')  # login or work machines
 agent_file_prefix="$HOME/.ssh/environment"
 hostname=`hostname -s`
 agent_file="${agent_file_prefix}/${hostname}"
@@ -175,7 +178,7 @@ function notify () {
     [ $# -ge 1 ] && msg="$1"
     [[ $# -gt 1 ]] && [[ -f "$2" ]] && input="$2" || input="-"
 
-    cat "$input" | mailx -s "Notify $date_time: $msg" $EMAIL 
+    cat "$input" | mailx -s "Notify $date_time: $msg" $EMAIL
 }
 
 function job_running () {

@@ -1,0 +1,2 @@
+#!/bin/bash
+qrsh -pe smp 16 -q gpu\* -l mem_free=48G,act_mem_free=48G,h_data=64G,gpu=2,gpu_ram=16G,hostname='!(dll9|dll10)' -V -wd $(pwd) -pty y bash

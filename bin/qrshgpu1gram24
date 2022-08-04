@@ -1,0 +1,2 @@
+#!/bin/bash
+qrsh -pe smp 12 -q gpu\* -l mem_free=32G,act_mem_free=32G,h_data=48G,gpu=1,gpu_ram=24G -V -wd $(pwd) -pty y bash

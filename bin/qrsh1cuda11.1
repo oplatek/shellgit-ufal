@@ -1,3 +1,0 @@
-#!/bin/bash
-set -euo pipefail
-qrsh -q gpu-ms.q -l mem_free=32G,act_mem_free=32G,h_data=48G,gpu=1,gpu_ram=24G,h=dll9\|dll10 -pe smp 8 -V -wd /ha/home/oplatek -pty y bash

@@ -1,3 +1,0 @@
-#!/bin/bash
-
-qrsh -pe smp 16 -q gpu-ms.q -l mem_free=64G,act_mem_free=64G,h_data=96G,gpu=2,gpu_ram=24G,h="dll9|dll10" -V -wd $(pwd) -pty y bash

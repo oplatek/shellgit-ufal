@@ -1,25 +1,31 @@
 #!/bin/bash
 
+# Setup conda base environment:
+# Go to https://docs.conda.io/en/latest/miniconda.html#latest-miniconda-installer-links and select Miniconda 3 Linux 64-bit version
+# Go to /lnet/work/people/oplatek/conda 
+# Wget the installer e.g.  wget https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh 
+# Install the miniconda bash Miniconda3-* -b -p $PWD/miniconda3_YOUR_NAME/ e.g. bash Miniconda3-py39_4.12.0-Linux-x86_64.sh -b -p $PWD/miniconda3_py39_4.12.0  
+# Update the snippet bellow to point to the new conda dir
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/oplatek/code/conda/miniconda3_py38_492/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+__conda_setup="$('/home/oplatek/code/conda/miniconda3_py39_4.12.0/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/home/oplatek/code/conda/miniconda3_py38_492/etc/profile.d/conda.sh" ]; then
-        . "/home/oplatek/code/conda/miniconda3_py38_492/etc/profile.d/conda.sh"
+    if [ -f "/home/oplatek/code/conda/miniconda3_py39_4.12.0/etc/profile.d/conda.sh" ]; then
+        . "/home/oplatek/code/conda/miniconda3_py39_4.12.0/etc/profile.d/conda.sh"
     else
-        export PATH="/home/oplatek/code/conda/miniconda3_py38_492/bin:$PATH"
+        export PATH="/home/oplatek/code/conda/miniconda3_py39_4.12.0/bin:$PATH"
     fi
 fi
 unset __conda_setup
+# <<< conda initialize <<<
 
+# Autoloading conda environemnt based on GIT_ROOT/env naming convention I use
 git_root="$(git rev-parse --show-toplevel)"
 if [ -d "$git_root/env" ] ; then
   conda activate "$git_root/env"
 fi
-# <<< conda initialize <<<
-
 
 # autojump
 [[ -s /ha/home/oplatek/.autojump/etc/profile.d/autojump.sh ]] && . /ha/home/oplatek/.autojump/etc/profile.d/autojump.sh
@@ -30,6 +36,8 @@ if [ -f /etc/bash_completion ]; then
 fi
 alias ufalgit='git --git-dir=$HOME/.shellgit-ufal.git/ --work-tree=$HOME'
 alias gtop='nvidia-smi -l'
+alias n="jupyter notebook --no-browser --ip 0.0.0.0"
+alias p="ipython"
 alias x='xdg-open'
 alias vi='vim'
 alias vimdiff='vim -d'
@@ -40,26 +48,6 @@ alias kronosssh="ssh -tY oplatek@kronos"
 alias twisterssh="ssh -tY oplatek@twister1"
 alias tunnel_kronos_8000to8000='ssh -N -f -L localhost:8000:localhost:8000 oplatek@kronos'
 
-# See https://wiki.ufal.ms.mff.cuni.cz/grid
-export headcmdprefix="ssh -t sol8 /bin/bash -l"
-alias qrsh4r8="$headcmdprefix ~/bin/qrsh4r8"
-alias qrsh8r16="$headcmdprefix ~/bin/qrsh8r16"
-alias qrsh8r64="$headcmdprefix ~/bin/qrsh8r64"
-# See https://wiki.ufal.ms.mff.cuni.cz/gpu
-alias qrsh1cuda11.1="$headcmdprefix ~/bin/qrsh1cuda11.1"
-alias qrsh2cuda11.1="$headcmdprefix ~/bin/qrsh2cuda11.1"
-alias qrsh1cuda10.2="$headcmdprefix ~/bin/qrsh1cuda10.2"
-alias qrsh2cuda10.2="$headcmdprefix ~/bin/qrsh2cuda10.2"
-
-# # CPU job:
-# function cpujob () {
-# 	qsub -N ... -cwd -b y -j y -q 'cpu*' -pe smp 2 -l mem_free=XYG,act_mem_free=XYG,h_vmem=XYG $(which python) $@
-# }
-# GPU job:
-# qsub -N ... -cwd -b y -j y -q ... -pe smp 2 -l gpu=XY,gpu_ram=XYG,mem_free=XYG,act_mem_free=XYG,h_data=XYG $(which python) $command
-# Interaktivni job:
-# qrsh -now no -N ... -q ... -pe smp 2 -l gpu=XY,gpu_ram=XYG,mem_free=XYG,act_mem_free=XYG,h_data=XYG -pty yes bash -l
-
 export PYTHONIOENCODING=utf-8
 
 
@@ -69,7 +57,7 @@ export AWS_PROFILE=clusterman
 alias ssh='ssh -AX'
 # see https://wiki.ufal.ms.mff.cuni.cz/internal:remote-access
 
-allowed_ssh_agents=('sol8')  # login or work machines
+allowed_ssh_agents=('blackbird geri freki sol2 sol8')  # login or work machines
 source $HOME/bin/source_start_agent.sh "$allowed_ssh_agents"
 
 sshcwd () {
@@ -97,59 +85,8 @@ fi
 
 export EMAIL="oplatek@ufal.mff.cuni.cz"
 
-# DEPRECATED TODO UPDATE
-# ### CUDA ###
-# # find /opt/cuda/ -name cudnn -exec bash -c "echo {}; ls {}" \;
-# # /opt/cuda/8.0/cudnn
-# # 6.0  7.0  7.1
-# # /opt/cuda/10.0/cudnn
-# # 7.4  7.6
-# # /opt/cuda/11.0/cudnn
-# # 8.0
-# # /opt/cuda/9.0/cudnn
-# # 7.0  7.1  7.4
-# # /opt/cuda/9.2/cudnn
-# # 7.1  7.4
-# # /opt/cuda/10.2/cudnn
-# # 7.6  8.0
-# # /opt/cuda/9.1/cudnn  # not available under conda cudatoolkit=9.1
-# # 7.0  7.1
-# # /opt/cuda/11.1/cudnn # needed for dll9 and dll10
-# # 8.0
-# # /opt/cuda/10.1/cudnn  # 10.1 and 7.6 produced errors for espnet
-# # 7.5  7.6
-#
-# hn="$(hostname)"
-# if [[ $hn = dll9 || $hn = dll10 ]] ; then
-#   CUDNN_version=8.0
-#   CUDA_version=11.1
-# elif [[ $hn = tdll[1-9] || $hn = dll[1-8] ]] ; then
-#   CUDNN_version=8.0
-#   CUDA_version=10.2
-# else
-#   CUDNN_version=""
-#   CUDA_version=""
-# fi
-#
-# CUDA_DIR_OPT="/opt/cuda/$CUDA_version"
-# if [ -d "$CUDA_DIR_OPT" ] ; then
-#   CUDA_DIR="$CUDA_DIR_OPT"
-#   export CUDA_HOME="$CUDA_DIR"
-#   export PATH="$CUDA_DIR/bin:$PATH"
-#   export LD_LIBRARY_PATH="$CUDA_DIR/cudnn/$CUDNN_version/lib64:$CUDA_DIR/lib64:$LD_LIBRARY_PATH"
-#   export LD_LIBRARY_PATH="$CUDA_DIR/targets/x86_64-linux/lib:$CUDA_DIR/lib64/stubs:$CUDA_DIR/lib64:$CUDA_DIR/lib/stubs:$CUDA_DIR/lib:$LD_LIBRARY_PATH"  # Kaldi from kaldi.mk
-#   export CPATH=$CUDA_DIR/cudnn/$CUDNN_version/include:$CPATH
-#   export CUDAToolkit_ROOT="$CUDA_DIR_OPT"
-# fi
-
-
 num_proc=$(grep processor /proc/cpuinfo | wc -l)
 alias make="make -j $(($num_proc / 3))"
-
-
-
-
-# . /home/odusek/.bashrc_make  # Rudolf's clever make autocompletion
 
 
 function notify () {

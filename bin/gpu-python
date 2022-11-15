@@ -1,0 +1,22 @@
+#!/bin/bash
+cpus_per_gpu=8
+gpu_mem=24  # GB for gpu memory
+num_gpu=1
+mem=32  # GB
+
+SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+. $SCRIPT_DIR/parse_options.sh
+
+if [[ $gpu -le 24 ]] ;  then
+  constraint="gpuram24G|gpuram40G|gpuram48G"
+elif [[ $gpu -le 40 ]] ; then
+  constraint="gpuram40G|gpuram48G"
+elif [[ $gpu -le 48 ]] ; then
+  constraint="gpuram48G"
+else
+  echo "You requested ${gpu_mem} which is not available on any machine"; exit 1
+fi
+
+srun -p gpu-troja,gpu-ms --job-name="py_$1" --constraint="$constraint" --gres=gpu:$num_gpu --mem=${mem}G --cpus-per-gpu $cpus_per_gpu --pty \
+  "$SCRIPT_DIR"/bashrun.sh python $@

@@ -37,7 +37,8 @@ fi
 alias ufalgit='git --git-dir=$HOME/.shellgit-ufal.git/ --work-tree=$HOME'
 alias gtop='nvidia-smi -l'
 alias n="jupyter notebook --no-browser --ip 0.0.0.0"
-alias p="ipython"
+alias i="ipython"
+alias p="python"
 alias x='xdg-open'
 alias vi='vim'
 alias vimdiff='vim -d'

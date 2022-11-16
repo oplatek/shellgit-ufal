@@ -52,9 +52,6 @@ alias tunnel_kronos_8000to8000='ssh -N -f -L localhost:8000:localhost:8000 oplat
 export PYTHONIOENCODING=utf-8
 
 
-export AWS_PROFILE=clusterman
-
-
 alias ssh='ssh -AX'
 # see https://wiki.ufal.ms.mff.cuni.cz/internal:remote-access
 

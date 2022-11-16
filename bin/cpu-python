@@ -1,6 +1,6 @@
 #!/bin/bash
-# This is launcher blocking script for SLURM GPU jobs
-# useful for following logs in tmux/screen
+# This is launcher blocking script for SLURM PYTHON CPU jobs
+# useful for following logs in tmux/screen.
 # Additionally if you want to interactively input commands
 # E.g. in python repl or in ipdb debugger 
 # specify pty=true
@@ -9,27 +9,20 @@
 # should be placed before your command i.e.
 # gpu-python --cpus_per_gpu 4 --gpu_mem 24 --mem 64 my_super_AWESOME_script.py --cool-option 1
 
+
 # OPTIONS of this script
-cpus_per_gpu=8
-gpu_mem=24  # GB for gpu memory
-num_gpu=1
 mem=32  # GB
+cpu=8
 pty="true"  # true | false
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
+# parse options will parse all defined options and fail on first unknown options
+# ie the script name
 . $SCRIPT_DIR/parse_options.sh
 set -euo pipefail
+# set -x
 
-if [[ $gpu_mem -le 24 ]] ;  then
-  constraint="gpuram24G|gpuram40G|gpuram48G"
-elif [[ $gpu_mem -le 40 ]] ; then
-  constraint="gpuram40G|gpuram48G"
-elif [[ $gpu_mem -le 48 ]] ; then
-  constraint="gpuram48G"
-else
-  echo "You requested ${gpu_mem} which is not available on any machine"; exit 1
-fi
 
 if [[ $pty = "true" ]] ; then
   pty="--pty"
@@ -38,11 +31,9 @@ else
 fi
 
 srun \
-  -p gpu-troja,gpu-ms \
+  -p cpu-troja,cpu-ms \
   --mem=${mem}G \
   --job-name="py_$1" \
   $pty \
-  --constraint="$constraint" \
-  --gres=gpu:$num_gpu \
-  --cpus-per-gpu $cpus_per_gpu \
+  --cpus-per-task=$cpu \
   "$SCRIPT_DIR"/bashrun.sh python $@

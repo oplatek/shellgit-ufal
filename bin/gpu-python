@@ -10,11 +10,14 @@
 # gpu-python --cpus_per_gpu 4 --gpu_mem 24 --mem 64 my_super_AWESOME_script.py --cool-option 1
 
 # OPTIONS of this script
+
 cpus_per_gpu=8
 gpu_mem=24  # GB for gpu memory
 num_gpu=1
 mem=32  # GB
-pty="true"  # true | false
+pty="false"  # true | false
+async="false"  # true | false
+logdir=log
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
@@ -37,11 +40,22 @@ else
   pty=""
 fi
 
-srun \
+if [[ $async = "true" ]] ; then
+  cmd=sbatch
+  output="--output=${logdir}/py_{$1}_%j.log"
+  printf "The output log should be at ${logdir}/py_$1_JOBNAME.log\n\n" 
+  mkdir -p $logdir
+else
+  cmd=srun
+  output=""
+fi
+
+$cmd \
   -p gpu-troja,gpu-ms \
   --mem=${mem}G \
   --job-name="py_$1" \
   $pty \
+  $output \
   --constraint="$constraint" \
   --gres=gpu:$num_gpu \
   --cpus-per-gpu $cpus_per_gpu \

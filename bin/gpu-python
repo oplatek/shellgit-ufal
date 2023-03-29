@@ -53,7 +53,7 @@ fi
 $cmd \
   -p gpu-troja,gpu-ms \
   --mem=${mem}G \
-  --job-name="py_$1" \
+  --job-name="P$1" \
   $pty \
   $output \
   --constraint="$constraint" \

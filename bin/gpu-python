@@ -15,7 +15,7 @@ cpus_per_gpu=8
 gpu_mem=24  # GB for gpu memory
 num_gpu=1
 mem=32  # GB
-pty="false"  # true | false
+pty="true"  # true | false
 async="false"  # true | false
 logdir=log
 
@@ -34,20 +34,21 @@ else
   echo "You requested ${gpu_mem} which is not available on any machine"; exit 1
 fi
 
-if [[ $pty = "true" ]] ; then
-  pty="--pty"
-else
-  pty=""
-fi
-
 if [[ $async = "true" ]] ; then
   cmd=sbatch
   output="--output=${logdir}/py_{$1}_%j.log"
   printf "The output log should be at ${logdir}/py_$1_JOBNAME.log\n\n" 
   mkdir -p $logdir
+  pty=false
 else
   cmd=srun
   output=""
+fi
+
+if [[ $pty = "true" ]] ; then
+  pty="--pty"
+else
+  pty=""
 fi
 
 $cmd \

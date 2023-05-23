@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export OPENAI_API_KEY="$(cat ~/.ssh/openai_api_key)"
+
 # Setup conda base environment:
 # Go to https://docs.conda.io/en/latest/miniconda.html#latest-miniconda-installer-links and select Miniconda 3 Linux 64-bit version
 # Go to /lnet/work/people/oplatek/conda 
@@ -21,9 +23,11 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-# Autoloading conda environemnt based on GIT_ROOT/env naming convention I use
+# Autoloading conda environemnt based on ./env and GIT_ROOT/env naming convention I use
 git_root="$(git rev-parse --show-toplevel)"
-if [ -d "$git_root/env" ] ; then
+if [ -d "env/conda-meta" ] ; then
+  conda activate ./env
+elif [ -d "$git_root/env/conda-meta" ] ; then
   conda activate "$git_root/env"
 fi
 

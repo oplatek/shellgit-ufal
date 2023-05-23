@@ -10,20 +10,17 @@
 # gpu-python --cpus_per_gpu 4 --gpu_mem 24 --mem 64 my_super_AWESOME_script.py --cool-option 1
 
 # OPTIONS of this script
-
 cpus_per_gpu=8
 gpu_mem=24  # GB for gpu memory
 num_gpu=1
 mem=32  # GB
-debug="false"  # true | false
 pty="true"  # true | false
-async="false"  # true | false
-logdir=log
+debug="false"  # true | false
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 . $SCRIPT_DIR/parse_options.sh
-set -euo pipefail
+set -eou pipefail
 
 if [[ $debug = "true" ]]; then
   set -x 
@@ -39,17 +36,6 @@ else
   echo "You requested ${gpu_mem} which is not available on any machine"; exit 1
 fi
 
-if [[ $async = "true" ]] ; then
-  cmd=sbatch
-  output="--output=${logdir}/py_{$1}_%j.log"
-  printf "The output log should be at ${logdir}/py_$1_JOBNAME.log\n\n" 
-  mkdir -p $logdir
-  pty=false
-else
-  cmd=srun
-  output=""
-fi
-
 if [[ $pty = "true" ]] ; then
   pty="--pty"
 else
@@ -57,13 +43,12 @@ else
   pty=""
 fi
 
-$cmd \
+srun \
   -p gpu-troja,gpu-ms \
   --mem=${mem}G \
-  --job-name="P$1" \
+  --job-name="py_$1" \
   $pty \
-  $output \
   --constraint="$constraint" \
   --gres=gpu:$num_gpu \
   --cpus-per-gpu $cpus_per_gpu \
-  "$SCRIPT_DIR"/bashrun.sh python $@
+  "$SCRIPT_DIR"/bashrun.sh $@

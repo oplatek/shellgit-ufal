@@ -1,2 +1,0 @@
-#!/bin/bash
-/opt/mfutils/mgmt datamap | ack '\tDIR' my-datamap | sed 's/ \(.\)B/\1/' | sort -rhk 3 | vi -

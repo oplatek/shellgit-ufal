@@ -1,4 +1,8 @@
 #!/bin/bash
+# set -x
+
+alias fs_quota="/opt/mfutils/mgmt quota"
+alias fs_datamap="/opt/mfutils/mgmt datamap"
 
 export OPENAI_API_KEY="$(cat ~/.ssh/openai_api_key)"
 

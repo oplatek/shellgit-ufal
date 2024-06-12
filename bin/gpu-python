@@ -19,6 +19,7 @@ debug="false"  # true | false
 pty="true"  # true | false
 async="false"  # true | false
 logdir=log
+nodelist=""  # separated by commas
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
@@ -37,6 +38,10 @@ elif [[ $gpu_mem -le 48 ]] ; then
   constraint="gpuram48G"
 else
   echo "You requested ${gpu_mem} which is not available on any machine"; exit 1
+fi
+
+if [[ ! -z "$nodelist" ]] ; then
+  nodelist="--nodelist $nodelist"
 fi
 
 if [[ $async = "true" ]] ; then
@@ -58,6 +63,7 @@ else
 fi
 
 $cmd \
+  $nodelist \
   -p gpu-troja,gpu-ms \
   --mem=${mem}G \
   --job-name="P$1" \

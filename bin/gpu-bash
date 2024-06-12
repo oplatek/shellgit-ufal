@@ -2,7 +2,7 @@
 # This is launcher blocking script for SLURM GPU jobs
 # useful for following logs in tmux/screen
 # Additionally if you want to interactively input commands
-# E.g. in python repl or in ipdb debugger 
+# E.g. in python repl or in ipdb debugger
 # specify pty=true
 #
 # The options intended to the SLURM/this submitter script
@@ -16,6 +16,7 @@ num_gpu=1
 mem=32  # GB
 pty="true"  # true | false
 debug="false"  # true | false
+nodelist=""  # separated by commas
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
@@ -23,7 +24,7 @@ SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 set -eou pipefail
 
 if [[ $debug = "true" ]]; then
-  set -x 
+  set -x
 fi
 
 if [[ $gpu_mem -le 24 ]] ;  then
@@ -43,7 +44,12 @@ else
   pty=""
 fi
 
+if [[ ! -z "$nodelist" ]] ; then
+  nodelist="--nodelist $nodelist"
+fi
+
 srun \
+  $nodelist \
   -p gpu-troja,gpu-ms \
   --mem=${mem}G \
   --job-name="py_$1" \

@@ -8,32 +8,48 @@ export OPENAI_API_KEY="$(cat ~/.ssh/openai_api_key)"
 
 # Setup conda base environment:
 # Go to https://docs.conda.io/en/latest/miniconda.html#latest-miniconda-installer-links and select Miniconda 3 Linux 64-bit version
-# Go to /lnet/work/people/oplatek/conda 
-# Wget the installer e.g.  wget https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh 
-# Install the miniconda bash Miniconda3-* -b -p $PWD/miniconda3_YOUR_NAME/ e.g. bash Miniconda3-py39_4.12.0-Linux-x86_64.sh -b -p $PWD/miniconda3_py39_4.12.0  
+# Go to /lnet/work/people/oplatek/conda
+# Wget the installer e.g. wget https://repo.anaconda.com/miniconda/Miniconda3-py311_23.5.2-0-Linux-x86_64.sh
+# Install the miniconda bash Miniconda3-* -b -p $PWD/miniconda3_YOUR_NAME/ e.g. bash Miniconda3-py311_23.5.2-0-Linux-x86_64.sh -b -p $PWD/miniconda3_py11_23.5.2
 # Update the snippet bellow to point to the new conda dir
+# or alternatively run ./miniconda3_py11_23.5.2/bin/conda init
+# source this bashrc
+# and install this or newer version
+# conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/oplatek/code/conda/miniconda3_py39_4.12.0/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+__conda_setup="$('/ha/home/oplatek/code/conda/miniconda3_py11_23.5.2/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/home/oplatek/code/conda/miniconda3_py39_4.12.0/etc/profile.d/conda.sh" ]; then
-        . "/home/oplatek/code/conda/miniconda3_py39_4.12.0/etc/profile.d/conda.sh"
+    if [ -f "/ha/home/oplatek/code/conda/miniconda3_py11_23.5.2/etc/profile.d/conda.sh" ]; then
+        . "/ha/home/oplatek/code/conda/miniconda3_py11_23.5.2/etc/profile.d/conda.sh"
     else
-        export PATH="/home/oplatek/code/conda/miniconda3_py39_4.12.0/bin:$PATH"
+        export PATH="/ha/home/oplatek/code/conda/miniconda3_py11_23.5.2/bin:$PATH"
     fi
 fi
 unset __conda_setup
 # <<< conda initialize <<<
 
 # Autoloading conda environemnt based on ./env and GIT_ROOT/env naming convention I use
-git_root="$(git rev-parse --show-toplevel)"
+git_root="$(git rev-parse --show-toplevel 2>/dev/null)"
 if [ -d "env/conda-meta" ] ; then
   conda activate ./env
 elif [ -d "$git_root/env/conda-meta" ] ; then
   conda activate "$git_root/env"
+  echo "ACTIVATED LOCAL conda env"
 fi
+# similarly also try to autoload pip venv
+if [ -f "venv/pyvenv.cfg" ] ; then
+  source venv/bin/activate
+elif [ -f ".venv/pyvenv.cfg" ] ; then
+  source .venv/bin/activate
+elif [ -f "$git_root/venv/pyvenv.cfg" ] ; then
+  source "$git_root/venv/bin/activate"
+elif [ -f "$git_root/.venv/pyvenv.cfg" ] ; then
+  source "$git_root/.venv/bin/activate"
+fi
+
 
 # autojump
 [[ -s /ha/home/oplatek/.autojump/etc/profile.d/autojump.sh ]] && . /ha/home/oplatek/.autojump/etc/profile.d/autojump.sh
@@ -118,3 +134,7 @@ function job_running () {
   2>&1 echo $msg
   echo $msg >(mail -s "Job not running $job_id $date_time: $msg" oplatek@ufal.mff.cuni.cz)
 }
+
+# Install Ruby Gems to ~/gems
+export GEM_HOME="$HOME/gems"
+export PATH="$HOME/gems/bin:$PATH"

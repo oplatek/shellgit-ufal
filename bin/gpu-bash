@@ -52,7 +52,7 @@ srun \
   $nodelist \
   -p gpu-troja,gpu-ms \
   --mem=${mem}G \
-  --job-name="py_$1" \
+  --job-name="b_$1" \
   $pty \
   --constraint="$constraint" \
   --gres=gpu:$num_gpu \

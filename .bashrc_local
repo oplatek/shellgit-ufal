@@ -18,14 +18,20 @@ export OPENAI_API_KEY="$(cat ~/.ssh/openai_api_key)"
 # conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/ha/home/oplatek/code/conda/miniconda3_py11_23.5.2/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+CLUSTER_CONDA="/ha/home/oplatek/code/conda/miniconda3_py11_23.5.2"
+NAMUDDIS_CONDA="/home/oplatek/conda/miniconda4.12._py39"
+if [[ -d "$CLUSTER_CONDA" ]] ; then OPLATEK_CONDA="$CLUSTER_CONDA" ; fi
+if [[ -d "$NAMUDDIS_CONDA" ]] ; then OPLATEK_CONDA="$NAMUDDIS_CONDA" ; fi
+
+
+__conda_setup="$($OPLATEK_CONDA/bin/conda 'shell.bash' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/ha/home/oplatek/code/conda/miniconda3_py11_23.5.2/etc/profile.d/conda.sh" ]; then
-        . "/ha/home/oplatek/code/conda/miniconda3_py11_23.5.2/etc/profile.d/conda.sh"
+    if [ -f "$OPLATEK_CONDA/etc/profile.d/conda.sh" ]; then
+        . "$OPLATEK_CONDA/etc/profile.d/conda.sh"
     else
-        export PATH="/ha/home/oplatek/code/conda/miniconda3_py11_23.5.2/bin:$PATH"
+        export PATH="$OPLATEK_CONDA/bin:$PATH"
     fi
 fi
 unset __conda_setup
@@ -79,7 +85,7 @@ export PYTHONIOENCODING=utf-8
 alias ssh='ssh -AX'
 # see https://wiki.ufal.ms.mff.cuni.cz/internal:remote-access
 
-allowed_ssh_agents=('blackbird geri freki sol2 sol8')  # login or work machines
+allowed_ssh_agents=('blackbird geri freki sol2 sol8 namuddis')  # login or work machines
 source $HOME/bin/source_start_agent.sh "$allowed_ssh_agents"
 
 sshcwd () {

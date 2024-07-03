@@ -5,7 +5,7 @@
 To install the settings, clone (readonly) this repository:
 
 ```bash
-git clone git@gitlab.com:oplatek/shellgit-ufal.git ~/shellgit-ufal
+git clone git@github.com:oplatek/shellgit-ufal.git ~/shellgit-ufal
 cp -r ~/shellgit-ufal/.git ~/.shellgit-ufal.git
 alias ufalgit='git --git-dir=$HOME/.shellgit-ufal.git/ --work-tree=$HOME'
 cd $HOME; ufalgit checkout .  # DANGEROUS ;-)

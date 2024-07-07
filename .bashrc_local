@@ -85,7 +85,7 @@ export PYTHONIOENCODING=utf-8
 alias ssh='ssh -AX'
 # see https://wiki.ufal.ms.mff.cuni.cz/internal:remote-access
 
-allowed_ssh_agents=('blackbird geri freki sol2 sol8 namuddis reprohum')  # login or work machines
+allowed_ssh_agents=('blackbird geri freki sol2 sol8 namuddis demo')  # login or work machines
 source $HOME/bin/source_start_agent.sh "$allowed_ssh_agents"
 
 sshcwd () {

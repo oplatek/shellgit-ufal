@@ -1,0 +1,48 @@
+#!/bin/bash
+# See email Deployment on quest/namuddis with proxy from
+#
+# websocket docs
+#
+# Návod je následující:
+# 1. naklonuj si repo a prepni se do vetve "websocket-demo":   git clone https://github.com/ufal/ufal-tools.git && cd ufal-tools && git checkout websocket-demo && cd websocket-demo
+# 2. Podívej se do README.md (lokalne v ufal-tools/websocket-demo/README.md) kde je popsaná installace a jak spustit websocket server pres gunicorn
+#
+# Nastavil jsem tam rovnou dva módy pro klienta "local" a "public_internet", které se připojují na "'ws://localhost:9999/echo"  a "ws://quest.ms.mff.cuni.cz/namuddis/ws-test/echo" v druhém případě.
+# Z toho je jasné, že chci zprovoznit websocketovou aplikaci na namuddisu, která se jmenuje "ws-test" a běží na localhost:9999.
+#
+# Pokud to chcete spustit na jinem IP staci pouzit --bind flag pro gunicorn se spravnou IP tedy napriklad:
+gunicorn -w 1 --threads 10 server:app --bind 10.10.51.63:9999
+#
+# Kdyz se podivas do slozky https://github.com/ufal/ufal-tools/tree/websocket-demo/websocket-demo/ tak zjistis ze cela appka tj. server.py a client.py ma mene jak 60 radek a je prehledna.
+# na serveru (gunicornova aplikace na namuddisu):
+#
+# @app.route('/ws/wstest', websocket=True)
+#
+# tu spoustim takhle:
+#
+# gunicorn -w 1 --threads 10 server:app --bind 10.10.51.63:8000
+#
+# a v klientske casti jsem nastavil:
+#
+# public_internet_address = 'ws://quest.ms.mff.cuni.cz/ws/wstest'
+#
+# Kdyz to takhle pustim, tak se navaze spojeni.
+# V logu apache na questu vidim:
+#
+# 195.113.18.170 - - [06/Feb/2023:12:06:45 +0100] "GET /ws/wstest HTTP/1.1" 200 1251 "-" "-"
+#
+# a vypisuji se poslana a prijata data.
+#
+# Chyba byla v te ceste - puvodne jsem tam mel jen /wstest a to hlasilo chybu 302.
+# Ted je to nastavene tak, ze URL:
+#
+# ws://quest.ms.mff.cuni.cz/ws/<neco>
+#
+# by mel quest presmerovat websocketovym tunelem na namuddis.
+# Tam musi poslouchat aplikace na portu 8000 (to cislo je ted napsane v konfiguraci apache ale da se zmenit) a prijimat pozadavky pro tohle URL.
+#
+#
+# Zkus jestli se ti podari to replikovat a dej vedet.
+
+# see also .ssh/config
+ssh namuddis

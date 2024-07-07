@@ -26,7 +26,7 @@ To browse source code go to https://gitlab.com/oplatek/shellgit-ufal or for stab
 * `.forward` and `.sge_request`  - sge related files to mail notifications
     
 ### Remind myself useful documentation
-For demos there virtual servers running behind quest for me they are: namuddis, reprohum and nlg appearing as e.g.
+For demos there virtual servers running behind quest for me they are: namuddis, demo and nlg appearing as e.g.
 https://quest.ms.mff.cuni.cz/nlg/factgenie/
 
 Onee can backup files to ATLAS server https://wiki.ufal.ms.mff.cuni.cz/internal:linux-network#atlas-archive-server

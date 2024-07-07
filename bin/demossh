@@ -1,0 +1,10 @@
+#!/bin/bash
+# See .ssh/config from shellgit
+# Reprohum is a virtual machine running at https://quest.ms.mff.cuni.cz/demo and this address is forwared the port 80 of demo virtual machine.
+# The oplatek and odusek have sudo their
+#
+#  docker is installed it uses overlay2 and docker root is at /var/lib/docker - at separate FS partition with 30G
+#
+# Source email from  Jindrich Vodrazka <vodrazka@ufal.mff.cuni.cz> January 3 2023
+
+ssh demo

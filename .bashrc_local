@@ -1,6 +1,7 @@
 #!/bin/bash
 # set -x
 
+alias expose="/home/oplatek/code/Expose/expose.sh"
 alias fs_quota="/opt/mfutils/mgmt quota"
 alias fs_datamap="/opt/mfutils/mgmt datamap"
 

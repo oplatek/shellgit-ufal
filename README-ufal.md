@@ -31,6 +31,8 @@ https://quest.ms.mff.cuni.cz/nlg/factgenie/
 
 Onee can backup files to ATLAS server https://wiki.ufal.ms.mff.cuni.cz/internal:linux-network#atlas-archive-server
 
+Alara is Odusek's desktop where custom based software may be installed `elara.n.mff.cuni.cz`.
+
 ### SSH to ufal servers and in between machine
 
 See `/etc/ssh/sshd_config`. The authorised key are located in `/home/ETC/$USER/.ssh`.

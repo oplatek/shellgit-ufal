@@ -11,12 +11,17 @@
 
 # OPTIONS of this script
 cpus_per_gpu=8
+# gpu_mem is gpu_mem minimal
 gpu_mem=24  # GB for gpu memory
+gpu_mem_exact=""
 num_gpu=1
 mem=32  # GB
 pty="true"  # true | false
+async="false"  # true | false
+logdir=log
 debug="false"  # true | false
 nodelist=""  # separated by commas
+jobname="b_$1"
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
@@ -27,15 +32,25 @@ if [[ $debug = "true" ]]; then
   set -x
 fi
 
-if [[ $gpu_mem -le 24 ]] ;  then
-  constraint="gpuram24G|gpuram40G|gpuram48G"
-elif [[ $gpu_mem -le 40 ]] ; then
-  constraint="gpuram40G|gpuram48G"
-elif [[ $gpu_mem -le 48 ]] ; then
-  constraint="gpuram48G"
+if [[ "$gpu_mem_exact" == "16" || "$gpu_mem_exact" == "24" || "$gpu_mem_exact" == "40" || "$gpu_mem_exact" == "48" ]]
+then
+  constraint="gpuram${gpu_mem_exact}G"
 else
-  echo "You requested ${gpu_mem} which is not available on any machine"; exit 1
-fi
+  if [[ ! -z $gpu_mem_exact ]] ; then
+    echo "You requested $gpu_mem_exact G GPU which is not available on any machine"; exit 1
+  fi
+
+  if [[ $gpu_mem -le 24 ]] ;  then
+    constraint="gpuram24G|gpuram40G|gpuram48G"
+  elif [[ $gpu_mem -le 40 ]] ; then
+    constraint="gpuram40G|gpuram48G"
+  elif [[ $gpu_mem -le 48 ]] ; then
+    constraint="gpuram48G"
+  else
+    echo "You requested minimum ${gpu_mem} G GPU mem which is not available on any machine"; exit 1
+  fi
+
+fi  # if gpu_mem_exact is not set
 
 if [[ $pty = "true" ]] ; then
   pty="--pty"
@@ -48,11 +63,22 @@ if [[ ! -z "$nodelist" ]] ; then
   nodelist="--nodelist $nodelist"
 fi
 
-srun \
+if [[ $async = "true" ]] ; then
+  cmd=sbatch
+  output="--output=${logdir}/b_${1}_%j.log"
+  printf "The output log should be at ${logdir}/b_$1_JOBNAME.log\n\n"
+  mkdir -p $logdir
+  pty=false
+else
+  cmd=srun
+  output=""
+fi
+
+$cmd \
   $nodelist \
   -p gpu-troja,gpu-ms \
   --mem=${mem}G \
-  --job-name="b_$1" \
+  --job-name="$jobname" \
   $pty \
   --constraint="$constraint" \
   --gres=gpu:$num_gpu \

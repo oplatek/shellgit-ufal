@@ -1,11 +1,14 @@
 #!/bin/bash
 # set -x
+export OUTPUT_DIR_URL_PREFIX="https://ufallab.ms.mff.cuni.cz/~oplatek/ep/COMET/"
 
 alias expose="/home/oplatek/code/Expose/expose.sh"
 alias fs_quota="/opt/mfutils/mgmt quota"
 alias fs_datamap="/opt/mfutils/mgmt datamap"
 
 export OPENAI_API_KEY="$(cat ~/.ssh/openai_api_key)"
+export HUGGINGFACE_TOKEN="$(cat ~/.ssh/huggingface_read_token)"
+
 
 # Setup conda base environment:
 # Go to https://docs.conda.io/en/latest/miniconda.html#latest-miniconda-installer-links and select Miniconda 3 Linux 64-bit version
@@ -86,7 +89,7 @@ export PYTHONIOENCODING=utf-8
 alias ssh='ssh -AX'
 # see https://wiki.ufal.ms.mff.cuni.cz/internal:remote-access
 
-allowed_ssh_agents=('blackbird geri freki sol2 sol8 namuddis demo')  # login or work machines
+allowed_ssh_agents=('blackbird geri loki freki sol2 sol8 namuddis demo')  # login or work machines
 source $HOME/bin/source_start_agent.sh "$allowed_ssh_agents"
 
 sshcwd () {

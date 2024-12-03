@@ -50,11 +50,18 @@ lrwxrwxrwx 1 oplatek ufal 25 Apr  6 15:07 id_rsa -> /home/oplatek/.ssh/id_rsa
 lrwxrwxrwx 1 oplatek ufal 29 Apr  6 15:07 id_rsa.pub -> /home/oplatek/.ssh/id_rsa.pub                                                                                     
 ```
 
+Useful tmux tips
+- see bin/tmux_attach.sh
+- `pkill -USR1 tmux` for attaching to sessions which are no longer visible/accessible. More at
+  https://ufal-mff-uk.slack.com/archives/C04AUS6FBG8/p1733214273985899?thread_ts=1733213961.826629&cid=C04AUS6FBG8. If
+  you tell us why it works let us know ;-)
+
 ### Credits
 I use settings and tips (with permission) from other people including:
 - Ondřej Dušek
 - Ondřej Bojar
 - Jan Vainer
 - Tomas Nekvinda
+- Zdenek Kasner
 
 Thanks to them, and complain for possible errors to me.

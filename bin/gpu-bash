@@ -15,13 +15,13 @@ cpus_per_gpu=8
 gpu_mem=24  # GB for gpu memory
 gpu_mem_exact=""
 num_gpu=1
-mem=32  # GB
+mem=64  # GB
 pty="true"  # true | false
 async="false"  # true | false
 logdir=log
 debug="false"  # true | false
 nodelist=""  # separated by commas
-jobname="b_$1"
+jobname="B$1"
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 

@@ -14,7 +14,7 @@
 cpus_per_gpu=8
 gpu_mem=24  # GB for gpu memory
 num_gpu=1
-mem=32  # GB
+mem=64  # GB
 debug="false"  # true | false
 pty="true"  # true | false
 async="false"  # true | false

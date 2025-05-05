@@ -1,6 +1,7 @@
 #!/bin/bash
 # set -x
 export OUTPUT_DIR_URL_PREFIX="https://ufallab.ms.mff.cuni.cz/~oplatek/ep/COMET/"
+export OLLAMA_MODELS="/lnet/work/projects/LLM/ollama"
 
 alias expose="/home/oplatek/code/Expose/expose.sh"
 alias fs_quota="/opt/mfutils/mgmt quota"
